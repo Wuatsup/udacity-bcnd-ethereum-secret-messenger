@@ -1,88 +1,80 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Deploy a Remix Contract</title>
 
-    <link rel="stylesheet" type="text/css" href="main.css">
+<meta charset="UTF-8">
 
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<title>Deploy a Remix Contract</title>
+
+<link rel="stylesheet" type="text/css" href="main.css">
+
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+
 </head>
 
 <body>
-    <div>
-        <h1>Ethereum Secret Messenger</h1>
-        <hr>
 
-        <label for="message">This site writes a secret message to the Ethereum
-            blockchain!</label>
-        <input id="userInput" type="text">
+<div>
 
-        <button id="setMessageButton">Set secret message</button>
-    </div>
+<h1>Ethereum Secret Messenger</h1>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<hr>
 
-    <script>
+<label for="message">This site writes a secret message to the Ethereum blockchain!</label>
 
-        // Connect a the web3 provider
-        if (typeof web3 !== 'undefined') {
-            web3 = new Web3(web3.currentProvider);
-            console.log("meta!!!!!!")
-        } else {
-            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
-        }
+<input id="userInput" type="text">
 
-        // Set a default account
-        web3.eth.defaultAccount = web3.eth.accounts[0];
+<button id="setMessageButton">Set secret message</button>
 
-        // Get the contract address
-        var RemixContract = new web3.eth.Contract(
-                [
-                    {
-                        "constant": false,
-                        "inputs": [
-                            {
-                                "name": "x",
-                                "type": "string"
-                            }
-                        ],
-                        "name": "setMessage",
-                        "outputs": [],
-                        "payable": false,
-                        "stateMutability": "nonpayable",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [],
-                        "name": "getMessage",
-                        "outputs": [
-                            {
-                                "name": "",
-                                "type": "string"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    }
-                ], '0xE59be8Ef9D694E4C83D881784055FC8Ca625f2e9', {
-                    from: '0x5f0f037b77Ee98c9563Cb881fD91618E98Feefa2', // default from address
-                    gasPrice: '20000000000' // default gas price in wei, 20 gwei in this case
-                }
-            );
+<button id="metamaskConnect">Connect to Metamask</button>
 
 
-        $("#setMessageButton").click(function () {
-            RemixContract.methods.setMessage($("#userInput").val()).send();
-            console.log($("#userInput").val())
-        });
+</div>
 
-    </script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+<script>
+
+// Connect a the web3 provider
+
+if (typeof web3 !== 'undefined') {
+
+web3 = new Web3(web3.currentProvider);
+
+} else {
+
+web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/e0cc62ef906b41f2895bc42a19a203fb"));
+
+} // Set a default account
+
+web3.eth.defaultAccount = "0xd5a19C0e85B955A90794f4566edc22BE4373d6F5";
+
+// Get the contract address
+
+var RemixContract = new web3.eth.Contract([ { "constant": false, "inputs": [ { "name": "x", "type": "string" } ], "name": "setMessage", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "getMessage", "outputs": [ { "name": "", "type": "string" } ], "payable": false, "stateMutability": "view", "type": "function" }],'0x946687De9a10677713F5D302361F5199aeC54A5d');
+
+// Get the contract abi
+
+RemixContract.options.from = "0x8b89c36FA114546b98b4bC511E48fb6322673915"; console.log(RemixContract);
+
+$("#setMessageButton").click(function () {
+
+message = $("#userInput").val(); RemixContract.methods.setMessage(message).send(); // or contract.methods.somFunc().send({from: ....}) // RemixContract.methods.setMessage(message).send({from: "0x364d8359D8817202Eed2244eb0E21f435C3f66d6"});
+
+console.log($("#userInput").val())
+
+$("#metamaskConnect").click(() => { ethereum.request({ method: 'eth_requestAccounts' }); })
+
+});
+
+</script>
+
 </body>
 
 </html>
